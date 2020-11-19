@@ -1,7 +1,5 @@
 "use strict"
 
-const { NonNullUniqueString, NonNullString } = require("./common");
-
 module.exports = (sequelize, DataTypes) => {
     let options = { 
         defaultScope: {

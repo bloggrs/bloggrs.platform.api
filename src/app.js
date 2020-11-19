@@ -4,9 +4,7 @@ require('express-async-errors');
 
 const models = require("./models")
 
-const SEQUELIZE_DROP_TABLES = process.env.SEQUELIZE_DROP_TABLES === "1"
-console.log("SEQUELIZE_DROP_TABLES", SEQUELIZE_DROP_TABLES)
-models.sequelize.sync({ force: false || SEQUELIZE_DROP_TABLES });
+models.sequelize.sync({ force: false });
 
 const http = require('http');
 const express = require('express')
@@ -16,9 +14,9 @@ const logger = require("morgan")("dev")
 
 const { errorHandler, allowCrossDomain } = require("./middlewares")
 
-const users_api = require("./lib/users-api")
-const auth_api = require("./lib/auth-api")
-const api_docs = require("./lib/api-docs")
+const users_api = require("./libs/users-api")
+const auth_api = require("./libs/auth-api")
+const api_docs = require("./libs/api-docs")
 
 const app = express();
 const server = http.createServer(app)

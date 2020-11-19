@@ -1,5 +1,5 @@
 
-const { findUserByPk } = require("../lib/users-dal");
+const { findUserByPk } = require("../libs/users-dal");
 const { ErrorHandler } = require("../utils/error")
 
 module.exports = async (req, res, next) => {
