@@ -8,6 +8,10 @@ class ErrorHandler extends Error {
     }
 }
 
+ErrorHandler.get404 = function(type){
+    return new ErrorHandler(404, `${type} not found`)
+}
+
 const handleError = (err, res) => {
     console.log(err,12333)
     const { code, message, errors } = err;

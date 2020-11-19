@@ -3,6 +3,11 @@ const yup = require("yup");
 const { email, password } = require("../utils/validations");
 
 module.exports = {
+    only_user_id_param_required: yup.object().shape({
+        params: yup.object().shape({
+            user_id: yup.string().test("is-number", val => !isNaN(Number(val)))
+        })
+    }),
     post_users: yup.object().shape({
         requestBody: yup.object().shape({
             email: email.required(),

@@ -30,7 +30,6 @@ app.get('/auth', jwtRequired, async (req, res) => {
 });
 
 app.post('/auth', validateRequest(post_auth), async (req, res) => {
-    console.log(55555)
     let user = await validateCredentials(req.body)
     return res.json(getResponse(user))
 });

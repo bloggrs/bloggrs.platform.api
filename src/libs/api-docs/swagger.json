@@ -14,12 +14,12 @@
     },
     "servers": [
         {
-            "url": "https://insurance-app-back-end.herokuapp.com/api/v1",
-            "description": "Live"
-        },
-        {
             "url": "http://localhost:4000/api/v1",
             "description": "Auto-hosted version"
+        },
+        {
+            "url": "https://app-name.herokuapp.com/api/v1",
+            "description": "Live"
         }
     ],
     "tags": [
@@ -28,44 +28,8 @@
             "description": "Users related API endpoints"
         },
         {
-            "name": "Events",
-            "description": "Events related API endpoints"
-        },
-        {
-            "name": "Campaigns",
-            "description": "Campaigns related API endpoints"
-        },
-        {
-            "name": "Campaign Categories",
-            "description": "Campaign Categories related API endpoints"
-        },
-        {
-            "name": "Participants",
-            "description": "Participation related API endpoints"
-        },
-        {
-            "name": "Favorites",
-            "description": "Favorites (User/Campaign) related API endpoints"
-        },
-        {
-            "name": "Scans",
-            "description": "Scans (User/Campaign) related API endpoints"
-        },
-        {
-            "name": "Feedback",
-            "description": "Feedback related API endpoints"
-        },
-        {
             "name": "Auth",
             "description": "Authentication related API endpoints"
-        },
-        {
-            "name": "CampaignsImages",
-            "description": "Images shown in Meine Benefits"
-        },
-        {
-            "name": "Points",
-            "description": "Points related API endpoints"
         }
     ],
     "paths": {
@@ -86,7 +50,6 @@
                     }
                 ],
                 "summary": "Get auth info by token",
-                "operationId": "GetAuth",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -131,7 +94,44 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Get all users"
+                "summary": "Get all users",
+                "security": [
+                    {
+                        "jwt_auth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns list of users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ApiResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "users": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/components/schemas/User"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "post": {
                 "tags": [
@@ -139,29 +139,28 @@
                 ],
                 "summary": "Create user",
                 "description": "Adds an user to the system",
-                "operationId": "addInventory",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
                                 "required": [
-                                    "full_name",
-                                    "birthday",
-                                    "gender",
-                                    "vkb_id"
+                                    "first_name",
+                                    "last_name",
+                                    "email",
+                                    "password"
                                 ],
                                 "properties": {
-                                    "full_name": {
+                                    "first_name": {
                                         "type": "string"
                                     },
-                                    "birthday": {
+                                    "last_name": {
                                         "type": "string"
                                     },
-                                    "gender": {
+                                    "email": {
                                         "type": "string"
                                     },
-                                    "vkb_id": {
+                                    "password": {
                                         "type": "string"
                                     }
                                 }
@@ -215,7 +214,58 @@
                 "summary": "Create user with full access"
             }
         },
-        "/users/id": {
+        "/users/{user_id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get specific user",
+                "parameters" : [ {
+                    "name" : "user_id",
+                    "in" : "path",
+                    "description" : "User ID",
+                    "required" : true,
+                    "schema" : {
+                      "type" : "integer",
+                      "format" : "int64"
+                    }
+                  } 
+                ],
+                "security": [
+                    {
+                        "jwt_auth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns a specific user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ApiResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "user": {
+                                                            "$ref": "#/components/schemas/User"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "patch": {
                 "tags": [
                     "Users"
@@ -227,421 +277,6 @@
                     "Users"
                 ],
                 "summary": "Delete user"
-            }
-        },
-        "/users/:user_id/points/changelogs": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get changelogs of points of a single user, access given if logged user is same as user_id or user has admin access"
-            }
-        },
-        "/users/:user_id/participants": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get participants object of :user_id, access given if admin or logged in user id same as :user_id"
-            }
-        },
-        "/points/changelogs": {
-            "get": {
-                "tags": [
-                    "Points"
-                ],
-                "summary": "Get all changelogs for all users"
-            }
-        },
-        "/points/give_for/button/gave_rating":{
-            "post": {
-                "tags": [
-                    "Points"
-                ]
-            }
-        },
-        "/events": {
-            "post": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Create event"
-            },
-            "get": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Get events",
-                "operationId": "GetEvents",
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/ApiResponse"
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "data": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "events": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "$ref": "#/components/schemas/Event"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/events/id": {
-            "get": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Get event"
-            },
-            "patch": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Update event"
-            },
-            "delete": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Delete event"
-            }
-        },
-        "/events/id/participate": {
-            "post": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Create participation for specified event for logged in user"
-            }
-        },
-        "/events/id/create_calendar": {
-            "post": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Create calendar for specified event for logged in user"
-            }
-        },
-        "/events/id/participating": {
-            "get": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Check if participation for specified event for logged in user exists"
-            }
-        },
-        "/events/id/remove_participation": {
-            "post": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Remove participation"
-            }
-        },
-        "/campaign_categories": {
-            "post": {
-                "tags": [
-                    "Campaign Categories"
-                ],
-                "summary": "Create Campaign Category"
-            },
-            "get": {
-                "tags": [
-                    "Campaign Categories"
-                ],
-                "summary": "Get Campaign Categories",
-                "operationId": "GetCampaignCategories",
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/ApiResponse"
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "data": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "campaign_categories": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "$ref": "#/components/schemas/CampaignCategory"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/campaign_categories/id": {
-            "patch": {
-                "tags": [
-                    "Campaign Categories"
-                ],
-                "summary": "Update Campaign Category"
-            },
-            "delete": {
-                "tags": [
-                    "Campaign Categories"
-                ],
-                "summary": "Delete Campaign Category"
-            }
-        },
-        "/campaigns": {
-            "get": {
-                "tags": [
-                    "Campaigns"
-                ],
-                "summary": "Get Campaigns",
-                "operationId": "GetCampaigns",
-                "parameters": [
-                    {
-                        "name": "categoryId",
-                        "in": "query",
-                        "description": "Filter by Campaign Category Id.",
-                        "schema": {
-                            "type": "string",
-                            "format": "number"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/ApiResponse"
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "data": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "campaigns": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "$ref": "#/components/schemas/Campaign"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Campaigns"
-                ],
-                "summary": "Create campaign"
-            }
-        },
-        "/campaigns/id": {
-            "get": {
-                "tags": [
-                    "Campaigns"
-                ],
-                "summary": "Get campaign"
-            },
-            "delete": {
-                "tags": [
-                    "Campaigns"
-                ],
-                "summary": "Delete campaign"
-            },
-            "patch": {
-                "tags": [
-                    "Campaigns"
-                ],
-                "summary": "Update campaign"
-            }
-        },
-        "/campaigns/id/favorite": {
-            "get": {
-                "tags": [
-                    "Campaigns"
-                ],
-                "summary": "Check if user already favorited specified campaign"
-            },
-            "post": {
-                "tags": [
-                    "Campaigns"
-                ],
-                "summary": "Favorite specified campaign"
-            }
-        },
-        "/campaigns/id/unfavorite": {
-            "post": {
-                "tags": [
-                    "Campaigns"
-                ],
-                "summary": "Unfavorite specified campaign"
-            }
-        },
-        "/favorites": {
-            "get": {
-                "tags": [
-                    "Favorites"
-                ],
-                "summary": "Get all favorites for logged in user"
-            }
-        },
-        "/scans": {
-            "get": {
-                "tags": [
-                    "Scans"
-                ],
-                "summary": "Get all scans for all users"
-            },
-            "post": {
-                "tags": [
-                    "Scans"
-                ],
-                "summary": "Create scan as a user"
-            }
-        },
-        "/scans/unrestricted": {
-            "post": {
-                "tags": [
-                    "Scans"
-                ],
-                "summary": "Create scan"
-            }
-        },
-        "/scans/advertiser": {
-            "post": {
-                "tags": [
-                    "Scans"
-                ],
-                "summary": "Create scan as advertiser"
-            }
-        },
-        "/scans/id": {
-            "delete": {
-                "tags": [
-                    "Scans"
-                ],
-                "summary": "Delete scan"
-            }
-        },
-
-
-        "/feedback": {
-            "get": {
-                "tags": [
-                    "Feedback"
-                ],
-                "summary": "Get all feedback for all users"
-            },
-            "post": {
-                "tags": [
-                    "Feedback"
-                ],
-                "summary": "Create feedback as a user"
-            }
-        },
-        "/feedback/unrestricted": {
-            "post": {
-                "tags": [
-                    "Feedback"
-                ],
-                "summary": "Create feedback"
-            }
-        },
-        "/feedback/advertiser": {
-            "post": {
-                "tags": [
-                    "Feedback"
-                ],
-                "summary": "Create feedback as advertiser"
-            }
-        },
-        "/feedback/id": {
-            "delete": {
-                "tags": [
-                    "Feedback"
-                ],
-                "summary": "Delete feedback"
-            }
-        },
-
-
-        "/participants": {
-            "get": {
-                "tags": [
-                    "Participants"
-                ],
-                "summary": "Get all participants"
-            },
-            "post": {
-                "tags": [
-                    "Participants"
-                ],
-                "summary": "Create a participant"
-            }
-        },
-        "/campaigns_images": {
-            "get": {
-                "tags": [
-                    "CampaignsImages"
-                ],
-                "summary": "Get all images for Meine Benefits page"
-            },
-            "post": {
-                "tags": [
-                    "CampaignsImages"
-                ],
-                "summary": "Add an image to Meine Benefits page"
-            }
-        },
-        "/campaigns_images/:id": {
-            "delete": {
-                "tags": [
-                    "CampaignsImages"
-                ],
-                "summary": "Delete an image from Meine Benefits page"
             }
         }
     },
@@ -658,12 +293,10 @@
             "User": {
                 "required": [
                     "id",
-                    "full_name",
-                    "birthday",
-                    "gender",
-                    "vkb_id",
-                    "isAdmin",
-                    "isAdvertiser"
+                    "email",
+                    "password",
+                    "first_name",
+                    "last_name"
                 ],
                 "type": "object",
                 "properties": {
@@ -671,113 +304,21 @@
                         "type": "integer",
                         "example": "1"
                     },
-                    "full_name": {
+                    "first_name": {
                         "type": "string",
-                        "example": "John Doe"
+                        "example": "John"
                     },
-                    "birthday": {
+                    "last_name": {
                         "type": "string",
-                        "format": "date-time",
-                        "example": "2016-08-29T09:12:33.001Z"
-                    },
-                    "gender": {
-                        "type": "string",
-                        "enum": [
-                            "male",
-                            "female"
-                        ]
-                    },
-                    "isAdmin": {
-                        "type": "boolean"
-                    },
-                    "isAdvertiser": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "Campaign": {
-                "required": [ 
-                    "id", "name", "thumbnail_url", "description", "image_url", 
-                    "qr_data", "link", "phone", "email", "favorite" 
-                ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": "1"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "thumbnail_url": {
-                        "type": "string"
-                    },
-                    "image_url": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "qr_data": {
-                        "type": "string"
-                    },
-                    "link": {
-                        "type": "string"
-                    },
-                    "phone": {
-                        "type": "string"
+                        "example": "Doe"
                     },
                     "email": {
-                        "type": "string"
+                        "type": "string@domain.com",
+                        "example": "Doe"
                     },
-                    "favorite": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "CampaignCategory": {
-                "required": [ "name" ],
-                "type": "object",
-                "properties": { "name": { "type": "string" }}
-            },
-            "Event": {
-                "required": [
-                    "id",
-                    "name",
-                    "thumbnail_url",
-                    "description",
-                    "datetime",
-                    "number",
-                    "link",
-                    "email"
-                ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": "1"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "thumbnail_url": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "datetime": {
+                    "password": {
                         "type": "string",
-                        "example": "String in format accepted by Date js object "
-                    },
-                    "number": {
-                        "type": "string"
-                    },
-                    "link": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
+                        "example": "example.123"
                     }
                 }
             },

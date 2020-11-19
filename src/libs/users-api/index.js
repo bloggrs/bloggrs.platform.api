@@ -4,20 +4,22 @@ const app = module.exports = express();
 
 const { allowCrossDomain, validateRequest, jwtRequired, passUserFromJWT, adminRequired } = require("../../middlewares");
 
-const { post_users, post_users_unrestricted, patch_users_unrestricted } = require("./validations");
+const { post_users, post_users_unrestricted, patch_users_unrestricted, only_user_id_param_required } = require("./validations");
 const createToken = require("../utils/createToken");
 const { 
     updateUser,
     deleteUser, 
     createUser, 
     createUserUnrestricted, 
-    findAll 
+    findAll, 
+    findByPk
 } = require("./users-dal");
+const { ErrorHandler } = require("../../utils/error");
 
 app.use(allowCrossDomain)
 
 app.get("/users", [
-    jwtRequired, passUserFromJWT, adminRequired
+    jwtRequired, passUserFromJWT
 ], async (req,res) => {
     let users = await findAll(); 
     return res.json({
@@ -27,8 +29,21 @@ app.get("/users", [
     })
 })
 
+app.get("/users/:user_id", [
+    jwtRequired, passUserFromJWT, validateRequest(only_user_id_param_required)
+], async (req,res) => {
+    let user = await findByPk(req.params.user_id);
+    if (!user) throw ErrorHandler.get404("User")
+    return res.json({
+        message: "success",
+        code: 200,
+        data: { user }
+    })
+})
+
 app.delete("/users/:user_id", [
-    jwtRequired, passUserFromJWT, adminRequired
+    jwtRequired, passUserFromJWT, adminRequired,
+    validateRequest(only_user_id_param_required)
 ], async (req,res) => {
     await deleteUser(req.params.user_id)
     return res.json({
@@ -38,7 +53,8 @@ app.delete("/users/:user_id", [
 })
 
 app.patch("/users/:user_id", [
-    jwtRequired, passUserFromJWT, adminRequired
+    jwtRequired, passUserFromJWT, adminRequired,
+    validateRequest(only_user_id_param_required)
 ], async (req,res) => {
     let user = await updateUser({
         pk: req.params.user_id,

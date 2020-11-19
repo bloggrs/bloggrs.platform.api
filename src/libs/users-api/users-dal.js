@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const { ErrorHandler } = require("../../utils/error");
 
 module.exports = {
+    findByPk: async pk => await User.findByPk(pk),
     findAll: async () => await User.findAll(),
     deleteUser: async pk => {
         let user = await User.findByPk(pk)
@@ -19,7 +20,7 @@ module.exports = {
     }) => {
         let user = await User.create({
             first_name, last_name, email, 
-            password: await bcrypt.hash(password , SALT_ROUNDS), points: 0, 
+            password: await bcrypt.hash(password, SALT_ROUNDS), points: 0, 
         })
         return user;
     },
@@ -28,7 +29,7 @@ module.exports = {
         email, password
     }) => {
         let args = { first_name, last_name, email }
-        if (password) args.password = await bcrypt.hash(password , SALT_ROUNDS)
+        if (password) args.password = await bcrypt.hash(password, SALT_ROUNDS)
         let user = await User.create(args)
         return user; 
     },
@@ -36,7 +37,7 @@ module.exports = {
         let keys = Object.keys(data);
         let user = await User.findByPk(pk);
         for (let key of keys){
-            user[key] = key === "password" ? await bcrypt.hash(data[key] , SALT_ROUNDS) : data[key]
+            user[key] = key === "password" ? await bcrypt.hash(data[key], SALT_ROUNDS) : data[key]
         }
         await user.save();
         return user;
