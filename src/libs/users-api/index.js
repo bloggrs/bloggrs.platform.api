@@ -13,7 +13,6 @@ const {
     createUserUnrestricted, 
     findAll 
 } = require("./users-dal");
-const body_param_string_to_integer = require("../../middlewares/body_param_string_to_integer");
 
 app.use(allowCrossDomain)
 
@@ -52,7 +51,7 @@ app.patch("/users/:user_id", [
     })
 })
 
-app.post("/users",body_param_string_to_integer("contract_id"), validateRequest(post_users), async (req, res) => {
+app.post("/users", validateRequest(post_users), async (req, res) => {
     let user = await createUser(req.body);
     return res.json({
         message: "success",
@@ -63,7 +62,6 @@ app.post("/users",body_param_string_to_integer("contract_id"), validateRequest(p
 
 app.post("/users/unrestricted", [
     jwtRequired, passUserFromJWT, adminRequired,
-    body_param_string_to_integer("contract_id"),
     validateRequest(post_users_unrestricted)
 ], async (req, res) => {
     let user = await createUserUnrestricted(req.body);
