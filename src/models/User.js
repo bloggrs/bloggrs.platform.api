@@ -1,5 +1,7 @@
 "use strict"
 
+const { ErrorHandler } = require("../utils/error");
+
 module.exports = (sequelize, DataTypes) => {
     let options = { 
         defaultScope: {
@@ -30,7 +32,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
     }, options);
-
+    User.findByPkOrError = async pk => {
+        let user = await User.findByPk(pk)
+        if (!user) throw new ErrorHandler.get404("User")
+        return user;
+    }
     User.associate = models => {
     }
     

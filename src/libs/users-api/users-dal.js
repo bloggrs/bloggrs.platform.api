@@ -8,10 +8,10 @@ const bcrypt = require("bcrypt");
 const { ErrorHandler } = require("../../utils/error");
 
 module.exports = {
-    findByPk: async pk => await User.findByPk(pk),
+    findByPk: async pk => await User.findByPkOrError(pk),
     findAll: async () => await User.findAll(),
     deleteUser: async pk => {
-        let user = await User.findByPk(pk)
+        let user = await User.findByPkOrError(pk)
         user.destroy();
         return true;
     },

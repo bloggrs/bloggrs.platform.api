@@ -54,7 +54,8 @@ app.delete("/users/:user_id", [
 
 app.patch("/users/:user_id", [
     jwtRequired, passUserFromJWT, adminRequired,
-    validateRequest(only_user_id_param_required)
+    validateRequest(only_user_id_param_required),
+    validateRequest(patch_users_unrestricted)
 ], async (req,res) => {
     let user = await updateUser({
         pk: req.params.user_id,
