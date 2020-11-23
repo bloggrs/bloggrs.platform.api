@@ -1,3 +1,36 @@
+schemas:
+  User:
+    required:
+    - id
+    - full_name
+    - birthday
+    - gender
+    - vkb_id
+    - isAdmin
+    - isAdvertiser
+    type: object
+    properties:
+      id:
+        type: integer
+        example: '1'
+      full_name:
+        type: string
+        example: John Doe
+      birthday:
+        type: string
+        format: date-time
+        example: '2016-08-29T09:12:33.001Z'
+      gender:
+        type: string
+        enum:
+        - male
+        - female
+      isAdmin:
+        type: boolean
+      isAdvertiser:
+        type: boolean
+
+paths:
   "/users":
     get:
       tags:

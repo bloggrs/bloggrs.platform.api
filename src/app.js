@@ -11,6 +11,14 @@ const express = require('express')
 const compression = require("compression");
 const bodyParser = require("body-parser")
 const logger = require("morgan")("dev")
+const DocsCollector = require("docs-collector")
+
+const docs_collector = new DocsCollector(
+    __dirname + "/libs/api-docs/swagger-input.json",
+    __dirname + "/libs/api-docs/swagger.json"
+)
+
+global.docs_collector = docs_collector;
 
 const { errorHandler, allowCrossDomain } = require("./middlewares")
 
@@ -30,6 +38,7 @@ app.use(allowCrossDomain)
 
 const PATHNAME_PREFIX = "/api/v1";
 
+docs_collector.generateSwaggerDocument()
 app.use(PATHNAME_PREFIX, api_docs)
 app.use(PATHNAME_PREFIX, auth_api)
 app.use(PATHNAME_PREFIX, users_api)

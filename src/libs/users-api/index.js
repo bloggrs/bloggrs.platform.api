@@ -1,3 +1,4 @@
+if (global.docs_collector) docs_collector.generalAddYAML(__dirname + "/docs.yaml")
 
 const express = require("express");
 const app = module.exports = express();

@@ -4,7 +4,6 @@ const app = module.exports = express();
 const swaggerUi = require('swagger-ui-express');
 
 // const swaggerDocument = YAML.load(swagger_path);
-const { DocsCollector } = require("../../../libs/docs-collector");
-const swaggerDocument = DocsCollector.getSwaggerDocument();
+const swaggerDocument = require("./swagger.json")
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
