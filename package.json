@@ -1,24 +1,25 @@
 {
-  "name": "solyd-floors-back-end",
+  "name": "taskme",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app",
+    "dev": "nodemon src/app --ignore src/libs/api-docs/swagger.json",
+    "dev-mac": "node_modules/nodemon/bin/nodemon.js src/app --ignore src/libs/api-docs/swagger.json",
     "start": "node src/app"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gjergjk71/solyd-floors-back-end.git"
+    "url": "git+https://github.com/taskme-project/taskme-back.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/gjergjk71/solyd-floors-back-end/issues"
+    "url": "https://github.com/taskme-project/taskme-back/issues"
   },
-  "homepage": "https://github.com/gjergjk71/solyd-floors-back-end#readme",
+  "homepage": "https://github.com/taskme-project/taskme-back#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
@@ -31,6 +32,7 @@
     "express-jwt": "^6.0.0",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
+    "nodemon": "^2.0.7",
     "sequelize": "^6.3.5",
     "swagger-ui-express": "^4.1.5",
     "yamljs": "^0.3.0",
