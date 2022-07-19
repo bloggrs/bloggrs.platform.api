@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     let User = sequelize.define('User', {
+        username: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
+        },
         email: {
             type: DataTypes.STRING,
             unique: true,
@@ -31,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        display_name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
     }, options);
     User.findByPkOrError = async pk => {
         let user = await User.findByPk(pk)

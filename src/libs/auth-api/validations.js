@@ -1,11 +1,11 @@
 const yup = require("yup");
 
-const { email, password } = require("../utils/validations");
+const { username, password } = require("../utils/validations");
 
 module.exports = {
     post_auth: yup.object().shape({
         requestBody: yup.object().shape({
-            email: email.required(),
+            username: username.required(),
             password: password.required()
         }).required()
     })

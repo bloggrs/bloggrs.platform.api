@@ -2,6 +2,6 @@
 const yup = require("yup");
 
 module.exports = {
-    email: yup.string().email(),
+    username: yup.string().string().min(4),
     password: yup.string().min(8),
 }
