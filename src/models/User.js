@@ -47,6 +47,8 @@ module.exports = (sequelize, DataTypes) => {
         return user;
     }
     User.associate = models => {
+        User.belongsTo(models.Media, { foreignKey: "thumbnail_media_id" });
+        User.belongsTo(models.Teams);
     }
     
     return User;
